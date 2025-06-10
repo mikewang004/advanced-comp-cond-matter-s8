@@ -1,0 +1,67 @@
+variable lab equal 1
+variable seed equal 13+654*${lab}
+
+units           lj
+atom_style      angle
+
+read_restart  res100new.278600000
+#read_data  PVA1000-347mil
+
+# no nb12, nb13:
+special_bonds   lj 0 0 1
+mass            * 1.0
+timestep        0.005
+
+#create velocities if started from .data
+#velocity        all create 1. 27287 
+
+#shifted 6-9 potential, cut off in the minimum
+pair_style      lj96/cut 1.6
+pair_modify     shift yes
+
+# eps sig rcut
+pair_coeff      * * 0.37775 0.89 1.6
+
+#  4eps=1.511
+
+#bond potential (1350=k/2)
+bond_style      harmonic
+bond_coeff      * 1350 0.5
+
+#angle potential
+angle_style     table linear 181
+angle_coeff     1 angle.aaaw7 aaaw7
+
+# update of neighbor lists
+neighbor        0.5 bin
+neigh_modify    delay 0 every 1 check yes
+
+#reset_timestep  347000000
+
+
+
+# thermostat
+fix       1 all langevin 1.0 1.0 2.0 ${seed}
+fix       2 all nve
+fix       3 all press/berendsen iso 8.0 8.0 200.0
+
+thermo            1000
+
+#compute myRDF all rdf 100
+#fix 4 all ave/time 100 1 100 c_myRDF file rdf.dat mode vector ave running
+
+#compute MSDall all  msd com yes
+
+#group g1  type 2 #only inner monomers are used for monomers MSD
+#compute myMSD g1 msd com yes
+#fix 6 g1 ave/time 1 1 2000  c_MSDall[4]  c_myMSD[4] file msd1000new-4.dat
+
+
+restart 2000000 res1000new.*
+
+
+dump 1 all custom 1 traj.lammpstrj id xu yu zu
+
+run 200
+
+write_restart res.final
