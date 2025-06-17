@@ -1,0 +1,23 @@
+ovito: 
+    operate on: particles
+    input property: coordination 
+
+
+run in cooling w/ original time 
+cooling @ temp 2.7 
+
+tijd 10-6 timestep 
+
+export local density analysis 
+
+
+otherwise make small cube calculate nematic order parameter 
+
+x package python cluster analysis 
+
+criterium for cluster analysis follows from nematic parameter 
+
+Write code for local coordinations analysis 
+also cluster analysis based on local nematic order 
+
+look at saras paper 
